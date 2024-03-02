@@ -30,9 +30,9 @@ app.use(express.json());
 app.use('/', indexRouter);
 app.use('/movies',moviesRoutes);
 app.use('/genres',genresRoutes);
-app.use('/apiGenres',apiGenresRoutes);
-app.use('/apiMovies',apiMoviesRoutes);
-app.use('/apiActors',apiActorsRoutes)
+app.use('/api',apiGenresRoutes);
+app.use('/api',apiMoviesRoutes);
+app.use('/api',apiActorsRoutes)
 
 
 //Activando el servidor desde express

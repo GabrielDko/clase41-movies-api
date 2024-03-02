@@ -1,40 +1,49 @@
-const db = require('../../database/models');
+const db = require("../../database/models");
 const sequelize = db.sequelize;
 
-
 const genresController = {
-    'list': (req, res) => {
-        db.Genre.findAll()
-            .then(genres => {
+    list: async (req, res) => {
+        try {
+            const genres = await db.Genre.findAll();
+            if (genres.length > 0) {
                 return res.status(200).json({
                     meta: {
                         total: genres.length,
                         status: 200,
-                        url: "/apiGenres/genres"
+                        url: "/apiGenres/genres",
                     },
                     data: genres,
-                })
-            })
-            .catch(err => console.log(err))
+                });
+            } else {
+                throw new Error("No hay géneros");
+            }
+        } catch (error) {
+            return res.status(400).send(error.message);
+        }
     },
-    'detail': (req, res) => {
-        db.Genre.findByPk(req.params.id)
-            .then(genre => {
-               if(genre){
-                return res.status(200).json({
-                    meta: {
-                        status: 200,
-                        url: `/apiGenres/genres/detail/${req.params.id}`
-                    },
-                    data: genre
-                })
-               } else {
-                return res.json("No encontramos el género")
-               }
-            })
-            .catch(err => console.log(err))
-    }
-
-}
+    detail: async (req, res) => {
+        try {
+            const id = parseInt(req.params.id);
+            if (!Number.isInteger(id)) {
+                throw new Error(`El id del género debe ser un número entero.`);
+            } else {
+                const genre = await db.Genre.findByPk(req.params.id);
+                if (genre) {
+                    return res.status(200).json({
+                        meta: {
+                            status: 200,
+                            url: `/apiGenres/genres/detail/${req.params.id}`,
+                        },
+                        data: genre,
+                    });
+                } else {
+                    throw new Error(`No existe el género con el ID ${req.params.id}.`);
+                }
+            }
+        } catch (error) {
+            return res.status(400).send(error.message);
+        }
+    },
+};
 
 module.exports = genresController;
