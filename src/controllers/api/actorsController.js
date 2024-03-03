@@ -72,6 +72,40 @@ const actorsController = {
             return res.status(400).send(error.message)
         }
     },
+    update: async (req,res)=>{
+        try {
+            const errors = validationResult(req)
+            if(!errors.isEmpty()){
+                const mappedError = errors.mapped();
+                for (const key in mappedError) {
+                    delete mappedError[key].type;
+                    delete mappedError[key].location;
+                    delete mappedError[key].path;
+                }
+                const jsonError = JSON.stringify(mappedError);
+                console.log(jsonError);
+                throw new Error(jsonError)
+            } else {
+                const id = parseInt(req.params.id);
+            if(!Number.isInteger(id)){
+                throw new Error('El id indicado debe ser un número entero');
+            } else {
+                const actor = await db.Actor.findByPk(id);
+                if(!actor){
+                    throw new Error(`El actor con el ID ${id} no existe.`)
+                } else {
+                    await actor.update(req.body)
+                    return res.status(200).json({
+                        actor,
+                        update: 'ok'
+                    })
+                }
+            }
+            }
+        } catch (error) {
+            return res.status(400).send(error.message)
+        }
+    },
     actorDelete: async (req, res) => {
         try {
             const id = parseInt(req.params.id);

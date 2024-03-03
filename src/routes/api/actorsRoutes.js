@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const actorsController = require('../../controllers/api/actorsController');
-const actorRegisterValidator = require('../../validations/actorRegisterValidator')
+const actorValidator = require('../../validations/actorValidator')
 
 router
 
@@ -10,7 +10,8 @@ router
 .get('/actors/search', actorsController.search)
 .get('/actor/detail/:id', actorsController.detail)
 
-.post('/actor/create', actorRegisterValidator, actorsController.create)
+.post('/actor/create', actorValidator, actorsController.create)
+.put('/actor/update/:id', actorValidator, actorsController.update)
 .delete('/actor/delete/:id', actorsController.actorDelete)
 
 module.exports = router;
