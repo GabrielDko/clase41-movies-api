@@ -3,9 +3,9 @@ const db = require('../database/models');
 const sequelize = db.sequelize;
 const { Op } = require("sequelize");
 const moment = require('moment');
-
-
+require('dotenv').config();
 //Aqui tienen otra forma de llamar a cada uno de los modelos
+const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 const Movies = db.Movie;
 const Genres = db.Genre;
 const Actors = db.Actor;
@@ -127,6 +127,22 @@ const moviesController = {
         .then(()=>{
             return res.redirect('/movies')})
         .catch(error => res.send(error)) 
+    },
+    search: async (req,res)=>{
+        try {
+            const {title} = req.query;
+            const apiKey = process.env.API_KEY;
+            const data = await fetch(`https://www.omdbapi.com/?apikey=${apiKey}&s=${title}&type=movie`).then(response => response.json())
+            const apiMovies = data.Search;
+            
+            if (data.Search && data.Search.length > 0) {
+                return res.render('moviesList', { apiMovies });
+            } else {
+                throw new Error(`No se encontraron películas para ${title}`);
+            }
+        } catch (error) {
+            res.render('moviesList',{ error: error.message });
+        }
     }
 }
 
