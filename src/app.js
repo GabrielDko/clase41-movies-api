@@ -28,8 +28,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(methodOverride('_method'));
 app.use(express.json());
 app.use('/', indexRouter);
-app.use('/movies',moviesRoutes);
-app.use('/genres',genresRoutes);
+app.use('/',moviesRoutes);
+app.use('/',genresRoutes);
 app.use('/api',apiGenresRoutes);
 app.use('/api',apiMoviesRoutes);
 app.use('/api',apiActorsRoutes)

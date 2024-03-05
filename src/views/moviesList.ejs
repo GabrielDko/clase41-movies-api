@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listado de Películas</title>
     <link rel='stylesheet' href='/css/style.css' />
-
 </head>
 
 <body>
@@ -18,17 +17,36 @@
     <p>
         <a class="botonAgregar" href="/movies/add">Agregar una Pelicula</a>
         <a class="botonVolver" href="/">inicio</a>
-
     </p>
     <br>
-    <ul>
-        <% for( let i = 0; i < movies.length; i++ ) { %>
-        <li>
-            <a href="/movies/detail/<%= movies[i].id %>"><%= movies[i].title %></a>
-        </li>
-        <% } %>
-
-    </ul>
+    <div style="display: flex; align-items: center; padding: 4px; text-align: center;">
+        <form action="/movies/search" method="get">
+            <input type="text" name="title" id="searchInput" style="padding: 0px 9px;">
+            <button type="submit" style="background-color: #9714b3; color: white; padding: 5px; border-radius: 10px;">
+                Buscar una película
+            </button>
+            
+        </form>
+    </div>
+    <br>
+    <% if (!locals.error) { %>
+        <ul>
+            <% if (!locals.apiMovies) { %>
+                <% for( let i = 0; i < movies.length; i++ ) { %>
+                    <li>
+                        <a href="/movies/detail/<%= movies[i].id %>"><%= movies[i].title %></a>
+                    </li>
+                    <% } %>
+            <% } else{ %>
+                <% apiMovies.forEach(movie => { %>
+                    <li><%= movie.Title %></li>
+                <% }) %>
+                <% } %>
+        </ul>
+    <% } else { %>
+    <p> <%= locals.error ? locals.error : null %></p>
+    <% } %>
+    
 </body>
 
 </html>
